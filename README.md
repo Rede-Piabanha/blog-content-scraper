@@ -1,8 +1,8 @@
-# WordPress Blog Database Scrapper
+# Blog Database Scrapper
 
 ## Descrição
 
-Este script, `WordPress Blog Database Scrapper`, foi desenvolvido para acessar a API REST do WordPress, obter todos os títulos e textos das postagens de um blog e salvá-los em um arquivo `.txt`. É uma ferramenta útil para quem deseja fazer backup do conteúdo de um blog ou analisar o conteúdo offline.
+Este script, `Blog Database Scrapper`, foi desenvolvido para acessar a API REST do WordPress, obter todos os títulos e textos das postagens de um blog e salvá-los em um arquivo `.txt`. É uma ferramenta útil para quem deseja fazer backup do conteúdo de um blog ou analisar o conteúdo offline.
 
 ## Funcionalidades
 
@@ -29,7 +29,7 @@ Este script é útil para proprietários de blogs, profissionais de SEO e desenv
 
 3. **Executar o Script**: Execute o script:
     ```sh
-    python wordpress-blog-database-scrapper.py
+    python blog-database-scrapper.py
     ```
 
 4. **Verificar os Resultados**: Os títulos e textos das postagens serão salvos em um arquivo chamado `posts_titulos_e_textos.txt`.

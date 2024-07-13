@@ -29,7 +29,7 @@ Este script é útil para proprietários de blogs, profissionais de SEO e desenv
 
 3. **Executar o Script**: Execute o script:
     ```sh
-    python WordPress_Blog_Database_Scrapper.py
+    python wordPress-blog-database-scrapper.py
     ```
 
 4. **Verificar os Resultados**: Os títulos e textos das postagens serão salvos em um arquivo chamado `posts_titulos_e_textos.txt`.

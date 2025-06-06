@@ -7,9 +7,17 @@ def get_all_posts_content(api_url):
     posts_content = []
     page = 1
     while True:
-        response = requests.get(f"{api_url}?page={page}&per_page=100")
+        try:
+            response = requests.get(
+                f"{api_url}?page={page}&per_page=100", timeout=10
+            )
+        except requests.RequestException as exc:
+            print(f"Erro ao acessar a API na página {page}: {exc}")
+            break
         if response.status_code != 200:
-            print(f"Erro ao acessar a API na página {page}: {response.status_code}")
+            print(
+                f"Erro ao acessar a API na página {page}: {response.status_code}"
+            )
             break
         posts = response.json()
         if not posts:

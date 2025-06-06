@@ -1,8 +1,8 @@
-# Blog Content Scrapper
+# Blog Content Scraper
 
 ## Descrição
 
-Este script, `Blog Content Scrapper`, foi desenvolvido para acessar a API REST do WordPress, obter todos os títulos e textos das postagens de um blog e salvá-los em um arquivo `.txt`. É uma ferramenta útil para quem deseja fazer backup do conteúdo de um blog ou analisar o conteúdo offline.
+Este script, `Blog Content Scraper`, foi desenvolvido para acessar a API REST do WordPress, obter todos os títulos e textos das postagens de um blog e salvá-los em um arquivo `.txt`. É uma ferramenta útil para quem deseja fazer backup do conteúdo de um blog ou analisar o conteúdo offline.
 
 ## Funcionalidades
 
@@ -29,7 +29,7 @@ Este script é útil para proprietários de blogs, profissionais de SEO e desenv
 
 3. **Executar o Script**: Execute o script:
     ```sh
-    python blog-content-scrapper.py
+    python blog-content-scraper.py
     ```
 
 4. **Verificar os Resultados**: Os títulos e textos das postagens serão salvos em um arquivo chamado `posts_titulos_e_textos.txt`.

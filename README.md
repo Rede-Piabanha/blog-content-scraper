@@ -2,72 +2,146 @@
 
 ## Visão geral
 
-`Blog Content Scraper` é um script em Python para extrair títulos e textos de posts publicados em um site WordPress por meio da REST API nativa.
+`Blog Content Scraper` é uma ferramenta em Python para extrair títulos e textos de posts públicos de sites WordPress por meio da REST API nativa.
 
-A ferramenta percorre as páginas do endpoint de posts, remove marcações HTML do conteúdo renderizado e salva o material em um arquivo de texto único, facilitando inventários editoriais, análises offline, auditorias simples de conteúdo e preparação de bases textuais para outros processos.
+A ferramenta percorre automaticamente todas as páginas do endpoint de posts, remove marcações HTML do conteúdo renderizado e salva o material em um único arquivo de texto UTF-8. É útil para inventários editoriais, análises offline, auditorias de conteúdo, preparação de bases textuais e fluxos de SEO.
 
 ## Funcionalidades
 
-- Coleta posts a partir do endpoint `/wp-json/wp/v2/posts`.
-- Pagina automaticamente os resultados usando `per_page=100`.
-- Extrai o título renderizado e o conteúdo renderizado de cada post.
-- Remove tags HTML com BeautifulSoup, preservando o texto limpo.
-- Gera um arquivo `.txt` com separador entre os posts.
-- Registra no terminal erros de acesso, páginas vazias e posts sem conteúdo aproveitável.
+- Aceita a URL principal do site WordPress ou o endpoint completo `/wp-json/wp/v2/posts`.
+- Normaliza automaticamente a URL para o endpoint de posts.
+- Pagina automaticamente os resultados com até 100 posts por requisição.
+- Usa os cabeçalhos de paginação do WordPress quando disponíveis.
+- Extrai título e conteúdo renderizados de cada post.
+- Remove tags HTML com BeautifulSoup.
+- Gera um arquivo `.txt` em UTF-8 com separador entre os posts.
+- Permite definir o arquivo de saída.
+- Permite configurar o timeout das requisições HTTP.
+- Trata erros de rede, respostas HTTP inválidas e JSON inesperado.
+- Encerra corretamente quando a API informa o fim da paginação.
 
-## Quando usar
+## Escopo
 
-Use este script quando precisar obter rapidamente o conteúdo textual publicado em um blog WordPress para backup simples, revisão editorial, análise de SEO, migração preliminar, comparação de conteúdo ou alimentação de outros fluxos de análise.
+O Blog Content Scraper trabalha apenas com conteúdo disponibilizado pelo site através da REST API do WordPress. Ele não autentica usuários, não acessa rascunhos privados, não contorna mecanismos de autenticação ou controle de acesso e não substitui um backup completo do WordPress.
 
-A ferramenta trabalha com posts acessíveis pela REST API pública do WordPress. Ela não autentica usuários, não coleta rascunhos, não exporta metadados completos e não substitui um backup estrutural do banco de dados.
+Use a ferramenta somente em conteúdo que você esteja autorizado a acessar e processar. Respeite termos de uso, direitos autorais, privacidade, limites do servidor e regras aplicáveis ao site de origem.
 
 ## Pré-requisitos
 
 - Python 3.x.
 - WordPress com REST API acessível.
-- Bibliotecas Python:
-  - `requests`
-  - `beautifulsoup4`
+- Acesso HTTP ao site de origem.
 
-Instale as dependências com:
+As dependências Python estão declaradas em `requirements.txt`:
 
-```sh
-pip install requests beautifulsoup4
-```
+- `requests`
+- `beautifulsoup4`
 
-## Configuração
+## Instalação
 
-Abra o arquivo `blog-content-scraper.py` e ajuste a variável:
-
-```python
-api_url = 'https://DOMINIO/wp-json/wp/v2/posts'
-```
-
-Substitua `DOMINIO` pelo domínio do site WordPress que será analisado.
-
-Exemplo:
-
-```python
-api_url = 'https://exemplo.com.br/wp-json/wp/v2/posts'
-```
-
-## Execução
-
-No terminal, execute:
+Clone o repositório ou baixe os arquivos e instale as dependências:
 
 ```sh
-python blog-content-scraper.py
+pip install -r requirements.txt
 ```
 
-Durante a execução, o script acessa a API em páginas sucessivas até encontrar uma página vazia ou receber uma resposta diferente de `200`.
+## Uso
+
+Informe a URL do site WordPress com `--url`:
+
+```sh
+python blog-content-scraper.py --url https://exemplo.com
+```
+
+Também é possível informar diretamente o endpoint de posts:
+
+```sh
+python blog-content-scraper.py --url https://exemplo.com/wp-json/wp/v2/posts
+```
+
+Nos dois casos, a ferramenta utilizará o endpoint:
+
+```text
+https://exemplo.com/wp-json/wp/v2/posts
+```
+
+### Definir arquivo de saída
+
+Por padrão, o resultado é salvo em `posts_titulos_e_textos.txt`.
+
+Para escolher outro arquivo:
+
+```sh
+python blog-content-scraper.py --url https://exemplo.com --output conteudo.txt
+```
+
+Também é possível informar um caminho:
+
+```sh
+python blog-content-scraper.py --url https://exemplo.com --output exportacao/posts.txt
+```
+
+### Definir timeout
+
+O timeout padrão é de 10 segundos por requisição.
+
+Para alterar:
+
+```sh
+python blog-content-scraper.py --url https://exemplo.com --timeout 20
+```
+
+## Ajuda da linha de comando
+
+```sh
+python blog-content-scraper.py --help
+```
 
 ## Arquivo gerado
 
-- `posts_titulos_e_textos.txt`: arquivo em UTF-8 contendo título e texto de cada post, separados por uma linha de `=`.
+O arquivo de saída contém o título e o texto limpo de cada post, separados por uma linha de `=`.
 
-## Observações
+O arquivo padrão `posts_titulos_e_textos.txt` está incluído no `.gitignore` para reduzir o risco de conteúdo coletado ser versionado acidentalmente.
 
-- O resultado depende da disponibilidade pública da REST API do WordPress.
-- Sites com bloqueios por firewall, CDN ou autenticação podem impedir a coleta.
-- O script remove HTML, mas não preserva estrutura editorial avançada, blocos, categorias, tags, autores ou datas.
-- Em sites grandes, a execução pode levar mais tempo e depender da estabilidade do servidor de origem.
+## Comportamento da paginação
+
+A ferramenta solicita até 100 posts por página, conforme permitido pela REST API padrão do WordPress.
+
+Quando o servidor fornece o cabeçalho `X-WP-TotalPages`, ele é usado para determinar o fim da coleta. A ferramenta também reconhece a resposta padrão `rest_post_invalid_page_number` como término normal da paginação em páginas subsequentes.
+
+## Limitações
+
+- Apenas posts públicos acessíveis pela REST API são coletados.
+- O script não exporta banco de dados, configurações, usuários, comentários ou arquivos de mídia.
+- Categorias, tags, autores, datas e outros metadados não são incluídos na saída atual.
+- A conversão para texto remove a estrutura HTML e pode simplificar formatação editorial.
+- Firewalls, WAFs, CDNs, autenticação, rate limiting ou REST API desabilitada podem impedir a coleta.
+- Sites grandes podem exigir mais tempo de execução e maior tolerância de timeout.
+
+## Segurança e privacidade
+
+Não inclua credenciais, tokens, chaves de API ou outros segredos na linha de comando, no código, em issues ou em pull requests.
+
+O conteúdo exportado pode estar sujeito a direitos autorais, regras de privacidade e outras obrigações. O usuário da ferramenta é responsável por verificar se possui autorização e base adequada para coletar, armazenar e processar o conteúdo.
+
+Vulnerabilidades de segurança não devem ser relatadas em issues públicas. Consulte [`SECURITY.md`](SECURITY.md).
+
+## Contribuições
+
+Contribuições são bem-vindas. Consulte [`CONTRIBUTING.md`](CONTRIBUTING.md) antes de enviar alterações.
+
+## Teste básico
+
+Para verificar a sintaxe do script:
+
+```sh
+python -m py_compile blog-content-scraper.py
+```
+
+## Licença
+
+Este projeto é distribuído sob a MIT License.
+
+Copyright (c) 2024-2026 Rede Piabanha.
+
+Consulte o arquivo [`LICENSE`](LICENSE) para os termos completos.
